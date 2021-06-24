@@ -165,27 +165,25 @@ Subscriber ImageTransport::subscribe(
 }
 
 CameraPublisher ImageTransport::advertiseCamera(
-  const std::string & base_topic, uint32_t queue_size,
+  const std::string & base_topic, uint32_t queue_size, rmw_qos_profile_t qos_profile,
   bool latch)
 {
   // TODO(ros2) implement when resolved: https://github.com/ros2/ros2/issues/464
   (void) latch;
-  rmw_qos_profile_t custom_qos = rmw_qos_profile_default;
-  custom_qos.depth = queue_size;
-  return create_camera_publisher(impl_->node_.get(), base_topic, custom_qos);
+  qos_profile.depth = queue_size;
+  return create_camera_publisher(impl_->node_.get(), base_topic, qos_profile);
 }
 
 CameraSubscriber ImageTransport::subscribeCamera(
-  const std::string & base_topic, uint32_t queue_size,
+  const std::string & base_topic, uint32_t queue_size, rmw_qos_profile_t qos_profile,
   const CameraSubscriber::Callback & callback,
   const VoidPtr & tracked_object,
   const TransportHints * transport_hints)
 {
   (void) tracked_object;
-  rmw_qos_profile_t custom_qos = rmw_qos_profile_default;
-  custom_qos.depth = queue_size;
+  qos_profile.depth = queue_size;
   return create_camera_subscription(impl_->node_.get(), base_topic, callback,
-           getTransportOrDefault(transport_hints), custom_qos);
+           getTransportOrDefault(transport_hints), qos_profile);
 }
 
 std::vector<std::string> ImageTransport::getDeclaredTransports() const

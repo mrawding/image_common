@@ -191,7 +191,7 @@ public:
    */
   IMAGE_TRANSPORT_PUBLIC
   CameraPublisher advertiseCamera(
-    const std::string & base_topic, uint32_t queue_size,
+    const std::string & base_topic, uint32_t queue_size, rmw_qos_profile_t qos_profile = rmw_qos_profile_default,
     bool latch = false);
 
   /*!
@@ -216,7 +216,7 @@ public:
    */
   IMAGE_TRANSPORT_PUBLIC
   CameraSubscriber subscribeCamera(
-    const std::string & base_topic, uint32_t queue_size,
+    const std::string & base_topic, uint32_t queue_size, rmw_qos_profile_t qos_profile,
     const CameraSubscriber::Callback & callback,
     const VoidPtr & tracked_object = VoidPtr(),
     const TransportHints * transport_hints = nullptr);
@@ -226,12 +226,12 @@ public:
    */
   IMAGE_TRANSPORT_PUBLIC
   CameraSubscriber subscribeCamera(
-    const std::string & base_topic, uint32_t queue_size,
+    const std::string & base_topic, uint32_t queue_size, rmw_qos_profile_t qos_profile,
     void (*fp)(const ImageConstPtr &,
                const CameraInfoConstPtr &),
     const TransportHints * transport_hints = nullptr)
   {
-    return subscribeCamera(base_topic, queue_size, CameraSubscriber::Callback(fp), VoidPtr(),
+    return subscribeCamera(base_topic, queue_size, qos_profile, CameraSubscriber::Callback(fp), VoidPtr(),
              transport_hints);
   }
 
@@ -241,12 +241,12 @@ public:
    */
   template<class T>
   CameraSubscriber subscribeCamera(
-    const std::string & base_topic, uint32_t queue_size,
+    const std::string & base_topic, uint32_t queue_size, rmw_qos_profile_t qos_profile,
     void (T::* fp)(const ImageConstPtr &,
                    const CameraInfoConstPtr &), T * obj,
     const TransportHints * transport_hints = nullptr)
   {
-    return subscribeCamera(base_topic, queue_size,
+    return subscribeCamera(base_topic, queue_size, qos_profile,
              std::bind(fp, obj, std::placeholders::_1, std::placeholders::_2), VoidPtr(),
              transport_hints);
   }
@@ -257,13 +257,13 @@ public:
    */
   template<class T>
   CameraSubscriber subscribeCamera(
-    const std::string & base_topic, uint32_t queue_size,
+    const std::string & base_topic, uint32_t queue_size, rmw_qos_profile_t qos_profile,
     void (T::* fp)(const ImageConstPtr &,
                    const CameraInfoConstPtr &),
     const std::shared_ptr<T> & obj,
     const TransportHints * transport_hints = nullptr)
   {
-    return subscribeCamera(base_topic, queue_size,
+    return subscribeCamera(base_topic, queue_size, qos_profile,
              std::bind(fp, obj.get(), std::placeholders::_1, std::placeholders::_2), obj,
              transport_hints);
   }
