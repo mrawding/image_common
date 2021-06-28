@@ -93,7 +93,7 @@ class ImageRepublisher : public rclcpp::Node
       out_transport= declare_parameter("transport_out","raw",transport_out);
 
       auto callback = std::bind(&ImageRepublisher::ParameterChangeCallback,this,std::placeholders::_1);
-      this->set_on_parameters_set_callback(callback); 
+      this->add_on_set_parameters_callback(callback); 
 
     }
 
